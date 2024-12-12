@@ -47,7 +47,7 @@ function convertToLKR() {
 function calculate() {
   let allowances = 0;
   let taxableAllowance = 0;
-  let basicSalary = parseFloat(document.getElementById("basicSalary").value);
+  let basicSalary = parseFloat(document.getElementById("basicSalary").value) || 0;
   document.querySelectorAll(".allowance").forEach(function (allowanceInput) {
     let allowanceValue = parseFloat(allowanceInput.value) || 0;
     const isTaxable = allowanceInput.dataset.taxable === "true";
@@ -60,7 +60,6 @@ function calculate() {
   let grossSalary = basicSalary + allowances;
 
   const taxableIncome = basicSalary + taxableAllowance;
-console.log(taxableIncome);
   // Calculate deductions, APIT, etc.
   const epfEmployee = basicSalary * 0.08;
   const epfEmployer = basicSalary * 0.12;
@@ -69,9 +68,7 @@ console.log(taxableIncome);
   // APIT Placeholder (use actual tax rates as needed)
 
   const apit = calculateAPIT(taxableIncome);
-  console.log(apit);
   const totalDeductions = parseFloat(epfEmployee) + apit;
-  console.log(epfEmployee);
   const netSalary = grossSalary - totalDeductions;
   const totalCostLkr = grossSalary + epfEmployer + etfEmployer;
   // Display results
@@ -206,11 +203,6 @@ function getQueryParams() {
 // Function to populate textboxes dynamically
 function populateTextboxes() {
   const queryParams = getQueryParams();
-  const container = document.getElementById("textbox-container");
-console.log(queryParams.a);
-  // Iterate over query parameters
- 
-      // Create a label and textbox for each parameter
       if(queryParams.b!==undefined){
          var basicSalary = document.getElementById("basicSalary");
          basicSalary.value = queryParams.b;
