@@ -136,7 +136,7 @@ function reverseCalculate() {
   displayResults(results);
 }
 // Function to add an allowance input
-function addAllowance() {
+function addAllowance(allowance = 0, taxable = false) {
   const allowancesSection = document.getElementById("allowances-section");
   const allowanceGroup = document.createElement("div");
   allowanceGroup.className = "allowance-group";
@@ -147,6 +147,7 @@ function addAllowance() {
   allowanceInput.className = "allowance";
   allowanceInput.placeholder = "Enter Allowance";
   allowanceInput.dataset.taxable = "false";
+  allowanceInput.value = allowance;
 
   // Taxable checkbox
   const taxableLabel = document.createElement("label");
@@ -154,6 +155,10 @@ function addAllowance() {
   const taxableCheckbox = document.createElement("input");
   taxableCheckbox.type = "checkbox";
   taxableCheckbox.className = "taxable-checkbox";
+  if(taxable){
+    taxableCheckbox.checked = true;
+    allowanceInput.dataset.taxable = "true";
+  }
   taxableCheckbox.addEventListener("change", function () {
     allowanceInput.dataset.taxable = this.checked ? "true" : "false";
   });
@@ -187,3 +192,45 @@ function displayResults(results) {
     resultsContent.appendChild(tile);
   }
 }
+
+// Function to get query parameters as an object
+function getQueryParams() {
+  const params = new URLSearchParams(window.location.search);
+  const queryObj = {};
+  for (const [key, value] of params.entries()) {
+      queryObj[key] = value;
+  }
+  return queryObj;
+}
+
+// Function to populate textboxes dynamically
+function populateTextboxes() {
+  const queryParams = getQueryParams();
+  const container = document.getElementById("textbox-container");
+console.log(queryParams.a);
+  // Iterate over query parameters
+ 
+      // Create a label and textbox for each parameter
+      if(queryParams.b!==undefined){
+         var basicSalary = document.getElementById("basicSalary");
+         basicSalary.value = queryParams.b;
+      }
+      if(queryParams.a1!==undefined){
+        if(queryParams.at1!==undefined && queryParams.at1==="1"){
+          addAllowance(queryParams.a1, true);
+        } else {
+          addAllowance(queryParams.a1, false);
+        }
+      }
+      if(queryParams.a2!==undefined){
+        if(queryParams.at2!==undefined && queryParams.at2==="1"){
+          addAllowance(queryParams.a2, true);
+        } else {
+          addAllowance(queryParams.a2, false);
+        }
+      }
+      calculate();
+}
+
+// Call the function on page load
+populateTextboxes();
