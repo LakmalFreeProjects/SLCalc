@@ -229,6 +229,27 @@ console.log(queryParams.a);
           addAllowance(queryParams.a2, false);
         }
       }
+      if(queryParams.a3!==undefined){
+        if(queryParams.at3!==undefined && queryParams.at3==="1"){
+          addAllowance(queryParams.a3, true);
+        } else {
+          addAllowance(queryParams.a3, false);
+        }
+      } 
+      if(queryParams.a4!==undefined){
+        if(queryParams.at4!==undefined && queryParams.at4==="1"){
+          addAllowance(queryParams.a4, true);
+        } else {
+          addAllowance(queryParams.a4, false);
+        }
+      }
+      if(queryParams.a5!==undefined){
+        if(queryParams.at5!==undefined && queryParams.at5==="1"){
+          addAllowance(queryParams.a5, true);
+        } else {
+          addAllowance(queryParams.a5, false);
+        }
+      }
       calculate();
 }
 
