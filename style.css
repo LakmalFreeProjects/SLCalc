@@ -80,3 +80,36 @@ h4 {
 .results table th {
   background-color: #f0f0f0;
 }
+
+/* Mobile Styles */
+@media (max-width: 600px) {
+  .input-row {
+    flex-direction: column; /* Stack inputs vertically */
+    align-items: flex-start; /* Align items to the start */
+  }
+
+  .input-row input {
+    width: 100%; /* Full width for inputs */
+    margin-bottom: 10px; /* Space between inputs */
+  }
+
+  .allowance-group {
+    flex-direction: column; /* Stack allowance inputs vertically */
+    align-items: flex-start; /* Align items to the start */
+  }
+
+  .allowance-group input[type="number"] {
+    width: 100%; /* Full width for allowance inputs */
+    margin-bottom: 5px; /* Space between allowance inputs */
+  }
+
+  .btn-add,
+  .btn-calculate {
+    width: 100%; /* Full width for buttons */
+    margin-top: 10px; /* Space above buttons */
+  }
+
+  .results table {
+    font-size: 14px; /* Smaller font size for tables */
+  }
+}
