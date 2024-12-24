@@ -7,25 +7,47 @@
   <link rel="stylesheet" href="style.css">
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
 </head>
 
-<body class="bg-gray-100 font-roboto">
+<body class="bg-gray-100 font-roboto text-sm">
+  <button class="" onclick="ToggleSettings()"><i class="fa fa-cog m-r-5 p-2" style="color:rgba(6, 214, 160, 1)"></i>
+  </button>
+ 
+   
+    <div class="flex justify-between space-x-4 max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg" id="SettingsDiv" style="display: none;">
+      <div class="flex justify-center mt-4">
+        
+      </div>
+      <label for="companyCost" class="block mt-4 text-gray-600">Base USD Rate:</label>
+        <input type="number" id="baseRate" value="200" placeholder="Enter Base USD Rate" class="mt-1 p-2 border border-gray-300 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      <label for="internetAllowance" class="block mt-4 text-gray-600">Internet/Mobile Allowance:</label>
+        <input type="number" id="internetAllowance" value="5000" placeholder="Enter Internet/Mobile Allowance" class="mt-1 p-2 border border-gray-300 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      <label for="costToBasicRatio" class="block mt-4 text-gray-600">Avg Comapny cost to Basic Salary ratio:</label>
+        <input type="number" id="costToBasicRatio" value="0.6" placeholder="Enter Avg Comapny cost to Basic Salary ratio" class="mt-1 p-2 border border-gray-300 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500" />
+    
+    </div>
   <div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg">
     <div class="flex justify-between space-x-4">
       <!-- Forward Calculation -->
       <div id="forwardCalc" class="calc-section w-full p-4 bg-gray-50 rounded-lg shadow-md">
         <h2 class="text-2xl font-bold text-center text-gray-800">Forward Calculation</h2>
         <label for="basicSalary" class="block mt-4 text-gray-600">Basic Salary (LKR):</label>
-        <input type="number" id="basicSalary" placeholder="Enter Basic Salary" class="mt-1 p-2 border border-gray-300 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        <input type="text" id="basicSalary" oninput="calculate()" placeholder="Enter Basic Salary" class="mt-1 p-2 border border-gray-300 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500" />
+     
         <!-- Allowances Section -->
         <div id="allowances-section" class="mt-4">
           <h4 class="text-lg font-semibold text-gray-700">Allowances</h4>
         </div>
         <button class="btn-add mt-2 bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition duration-200" onclick="addAllowance()">Add Allowance</button>
+        <button class="btn-add mt-2 bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition duration-200" onclick="addPeggedAllowance()">Add Pegged Allowance</button>
+        <button class="btn-add mt-2 bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition duration-200" onclick="addInternetAllowance()">Add Internet Allowance</button>
         <div class="flex justify-center mt-4">
           <button class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition duration-200 w-full" onclick="calculate()">Calculate</button>
         </div>
-      </div>
+        </div>
      
 
       <!-- Reverse Calculation -->
@@ -46,12 +68,11 @@
       </div>
     </div>
     <!-- Results -->
-    <div id="results" class="mt-6 p-4 bg-gray-50 rounded-lg shadow-md">
-      <h3 class="text-lg font-semibold text-gray-800">Results</h3>
-      <div id="results-content" class="mt-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <!-- Results will be dynamically inserted here -->
-      </div>
-    </div>
+    <div id="results" class="flex justify-between space-x-4 mt-6 p-4 bg-gray-50 rounded-lg shadow-md">\
+ </div>
+        
+         
+        
   </div>
 
   <script src="script.js"></script>
