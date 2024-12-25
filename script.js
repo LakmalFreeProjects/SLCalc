@@ -23,22 +23,37 @@ function ToggleSettings(){
 }
 
 function calculateAPIT(taxableIncome) {
+  let year = document.getElementById("taxLogicYear").value;
   let apit = 0;
 
-  if (taxableIncome > 308333) {
-    apit = taxableIncome * 0.36 - 73500;
-  } else if (taxableIncome > 266667) {
-    apit = taxableIncome * 0.3 - 55000;
-  } else if (taxableIncome > 225000) {
-    apit = taxableIncome * 0.24 - 39000;
-  } else if (taxableIncome > 183333) {
-    apit = taxableIncome * 0.18 - 25500;
-  } else if (taxableIncome > 141667) {
-    apit = taxableIncome * 0.12 - 14500;
-  } else if (taxableIncome > 100000) {
-    apit = taxableIncome * 0.06 - 6000;
+  if(year == '2024'){
+    if (taxableIncome > 358333) {
+      apit = taxableIncome * 0.36 - 94000;
+    } else if (taxableIncome > 316666) {
+      apit = taxableIncome * 0.30 - 72500;
+    } else if (taxableIncome > 275000) {
+      apit = taxableIncome * 0.24 - 53500; 
+    } else if (taxableIncome > 233333) {
+      apit = taxableIncome * 0.18 - 37000; 
+    } else if (taxableIncome > 150000) {
+      apit = taxableIncome * 0.06 - 9000;
+    }
   }
-
+  else {
+    if (taxableIncome > 308333) {
+      apit = taxableIncome * 0.36 - 73500;
+    } else if (taxableIncome > 266667) {
+      apit = taxableIncome * 0.3 - 55000;
+    } else if (taxableIncome > 225000) {
+      apit = taxableIncome * 0.24 - 39000;
+    } else if (taxableIncome > 183333) {
+      apit = taxableIncome * 0.18 - 25500;
+    } else if (taxableIncome > 141667) {
+      apit = taxableIncome * 0.12 - 14500;
+    } else if (taxableIncome > 100000) {
+      apit = taxableIncome * 0.06 - 6000;
+    }
+  }
   return apit;
 }
 
@@ -57,11 +72,15 @@ function updatePeggedAllowance(){
   var lkrFromUsd = document.getElementById("lkrRate").value||200;
   document.querySelectorAll(".allowance").forEach(function (allowanceInput) {
     if (allowanceInput.dataset.type === "p") {
-      let basicSalary = parseFloat(document.getElementById("basicSalary").value) || 0;
       let baseRate = parseFloat(document.getElementById("baseRate").value) ||200;
+      if(baseRate == 0) return;
+      else{
+      let basicSalary = parseFloat(document.getElementById("basicSalary").value) || 0;
+      
       let peggedAllowance = (basicSalary*((lkrFromUsd-baseRate)/baseRate));
       peggedAllowance= (peggedAllowance < 0? 0: peggedAllowance); 
       allowanceInput.value = peggedAllowance.toFixed(0);
+      }
     }
   });
 }
@@ -99,7 +118,7 @@ function calculate() {
   const etfEmployer = basicSalary * 0.03;
 
   // APIT Placeholder (use actual tax rates as needed)
-
+  
   const apit = calculateAPIT(taxableIncome);
   const totalDeductions = epfEmployee + apit;
   const netSalary = grossSalary - totalDeductions;
@@ -123,11 +142,14 @@ function calculate() {
     <hr>
      <table class="text-sm text-right w-full border-collapse	">
     <caption class = "text-left">Take Home Salary</caption>
+    <tr><th></th><td>${grossSalary.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td></tr>
+    <tr><th></th><td>- ${(apit+epfEmployee).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td></tr>
     <tr><th>Take Home Salary</th><th>${netSalary.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</th></tr>
     </table>
 
  <input type="hidden" value="${window.location.href.split('?')[0]}${queryOutput}" id="shareURL">
     <button class="btn-copy mt-2 bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition duration-200" onclick="copyURL()">Copy Share URL</button>
+    <button class="btn-copy mt-2 bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition duration-200" onclick="fillUSD()">Fill USD section</button>
 
 
     </div>
@@ -135,9 +157,9 @@ function calculate() {
     <table class="text-sm text-right w-full">
     <caption class = "text-left">Company Cost Breakdown</caption>
     <tr><th>Base Salary</th><td>${basicSalary.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td></tr>
-      <tr><th>Allowances</th><td>${allowances.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td></tr>
-      <tr><th>EPF (Employer)</th><td>${epfEmployer.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td></tr>
-      <tr><th>ETF (Employer)</th><td>${etfEmployer.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td></tr>
+      <tr><th>Allowances</th><td>+ ${allowances.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td></tr>
+      <tr><th>EPF (Employer)</th><td>+ ${epfEmployer.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td></tr>
+      <tr><th>ETF (Employer)</th><td>+ ${etfEmployer.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td></tr>
       </table>
       <hr>
        <table class="text-sm text-right w-full">
@@ -145,6 +167,7 @@ function calculate() {
       <tr><th></th><th>${totalCostLkr.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</th></tr>
 
     </table>
+    <input type="hidden" id="calculatedCompanyCost" value="${totalCostLkr}" />
          <div class="divCompanyCost"></div>
          <canvas id="chartCompanyCost" style="width:100%;max-width:600px"></canvas>
           <ul class="list-inline pull-left mb-1" style="list-style-type: none;">
@@ -185,6 +208,8 @@ function calculate() {
    { v:'employer contributions',color: 'rgb(7, 59, 76)', percentage: ((epfEmployer+etfEmployer)*100)/totalCostLkr },
 
   ]);
+  let x = document.getElementById("results");
+  x.style.display = "flex";
 }
 
 function copyURL(){
@@ -213,7 +238,8 @@ function reverseCalculate() {
   const netSalary = grossSalary - apit - epfEmployee;
   // Display reverse results
   const reverseResultsTable = `
-    <table>
+    <table class="text-sm text-right">
+     <caption class = "text-left">Equivalent LKR Salary (without allowances)</caption>
     <tr><th>Base Salary</th><td>${grossSalary.toFixed(2)}</td></tr>
       <tr><th>Gross Salary</th><td>${grossSalary.toFixed(2)}</td></tr>
       <tr><th>EPF (Employee)</th><td>${epfEmployee.toFixed(2)}</td></tr>
@@ -222,9 +248,10 @@ function reverseCalculate() {
       <tr><th>APIT</th><td>${apit.toFixed(2)}</td></tr>
        <tr><th>Net Salary</th><td>${netSalary.toFixed(2)}</td></tr>
       <tr><th>Company Cost</th><td>${companyCost.toFixed(2)}</td></tr>
+       <tr><td colspan="2"><button class="btn-copy mt-2 bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition duration-200" onclick="fillResults(${companyCost.toFixed(2)})">Fill LKR Section (including allowances)</button>
+</td></tr>
     </table>
-    <button class="btn-copy mt-2 bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition duration-200" onclick="fillResults(${companyCost.toFixed(2)})">Fill</button>
-  `;
+      `;
   document.getElementById("results").innerHTML = reverseResultsTable;
   const results = {
     "Base Salary": 100.0,
@@ -238,6 +265,8 @@ function reverseCalculate() {
   };
 
   displayResults(results);
+  let x = document.getElementById("results");
+  x.style.display = "none";
 }
 
 function fillResults(companyCost){
@@ -245,29 +274,43 @@ function fillResults(companyCost){
     var basicSalary = document.getElementById("basicSalary");
     var costToBasicRatio = document.getElementById("costToBasicRatio").value || 0.6125;
     //formatNumber(Math.round(companyCost*costToBasicRatio/100)*100);
-    document.getElementById("basicSalaryDisplay").value = Math.round(companyCost*costToBasicRatio/100)*100;
+    basicSalary.value = Math.round(companyCost*costToBasicRatio/100)*100;
     //basicSalary.value = Math.round(companyCost*costToBasicRatio/100)*100;
     document.querySelectorAll('.allowance-group').forEach(e => e.remove());
 
     addInternetAllowance();
     addPeggedAllowance();
  }
-
 }
+
+function fillUSD(){
+  var lkrRate = document.getElementById("lkrRate").value||200;
+  var calculatedCompanyCost = document.getElementById("calculatedCompanyCost").value;
+  document.getElementById("usdAmount").value = calculatedCompanyCost / lkrRate;
+  document.getElementById("companyCost").value = calculatedCompanyCost;
+ }
+
 function addPeggedAllowance(){
+  let baseRate = document.getElementById("baseRate").value ||200;
+  if(baseRate==0) return;
+  else {
   var basicSalary = document.getElementById("basicSalary").value||0;
   var lkrFromUsd = document.getElementById("lkrRate").value||200;
-  let baseRate = parseFloat(document.getElementById("baseRate").value) ||200;
+  
  var peggedAllowance = basicSalary*((lkrFromUsd-baseRate)/baseRate);
  peggedAllowance= (peggedAllowance < 0? 0: peggedAllowance); 
   addAllowance(peggedAllowance.toFixed(0), true,"p");
+  }
 }
 
 function addInternetAllowance(){
   let internetAllowance = document.getElementById("internetAllowance").value||0;
+  if (internetAllowance == 0) return;
+  else {
   let taxableAllowance = internetAllowance/2;
   addAllowance(taxableAllowance.toFixed(0), true, "i");
   addAllowance(taxableAllowance.toFixed(0), false,"i");
+  }
 }
 
 // Function to add an allowance input
@@ -314,15 +357,15 @@ function addAllowance(allowance = 0, taxable = false, type = 'a') {
 }
 
 function displayResults(results) {
-  //const resultsContent = document.getElementById("results-content");
-  //resultsContent.innerHTML = ""; // Clear previous results
+  const resultsContent = document.getElementById("results-content");
+  resultsContent.innerHTML = ""; // Clear previous results
 
   // Create tiles for each result
   for (const [key, value] of Object.entries(results)) {
     const tile = document.createElement("div");
     tile.className = "bg-white p-4 rounded-lg shadow-md border border-gray-200";
     tile.innerHTML = `
-            <h4 class="font-semibold">${key}</h4>
+            <h6 class="font-semibold">${key}</h4>
             <p class="text-lg">${value.toFixed(2)}</p>
         `;
     resultsContent.appendChild(tile);
@@ -425,8 +468,8 @@ function setGradient(divElement,chartElement, percentages) {
   divElement.style.borderTop = '0px solid';
   divElement.style.display = 'block';
   var xValues = percentages.map(x=>x.v);
-var yValues = percentages.map(x=>x.percentage);
-var barColors = percentages.map(x=>x.color);
+let yValues = percentages.map(x=>x.percentage);
+let barColors = percentages.map(x=>x.color);
 
 new Chart(chartElement, {
   type: "doughnut",
@@ -454,6 +497,7 @@ new Chart(chartElement, {
           }
       }
     }
+    
   }});
 }
 
@@ -473,3 +517,15 @@ function formatNumber(input) {
   // Update the hidden input with the raw value (remove commas)
   document.getElementById("basicSalary").value = value; // Store the raw number without formatting
 }
+
+document.getElementById('openModal').onclick = function() {
+  document.getElementById('settingsModal').classList.remove('hidden');
+};
+
+document.getElementById('closeModal').onclick = function() {
+  document.getElementById('settingsModal').classList.add('hidden');
+};
+
+document.getElementById('saveModal').onclick = function() {
+  document.getElementById('settingsModal').classList.add('hidden');
+};
