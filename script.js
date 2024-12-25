@@ -182,11 +182,11 @@ function calculate() {
         
      
   `;
-  
+  const uniqueLabel = `${shareURL}-${Date.now()}`;
   if (typeof gtag === 'function') {
     gtag('event', 'share_url_calculated', {
       'event_category': 'Calculation',
-      'event_label': queryOutput
+      'event_label': uniqueLabel
     });
   } else if (typeof ga === 'function') {
     ga('send', 'event', 'Calculation', 'share_url_calculated', queryOutput);
