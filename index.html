@@ -13,29 +13,50 @@
 </head>
 
 <body class="bg-gray-100 font-roboto text-sm">
-  <button class="" onclick="ToggleSettings()"><i class="fa fa-cog m-r-5 p-2" style="color:rgba(6, 214, 160, 1)"></i>
-  </button>
+
+  <div id="settingsModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+    <div class="bg-white rounded-lg shadow-lg p-6 w-1/3">
+        <h2 class="text-xl font-semibold mb-4">Settings</h2>
+        <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700">Base USD Rate:</label>
+            <input id="baseRate" value="200" type="number" class="mt-1 block w-full border border-gray-300 rounded-md p-2" placeholder="Enter Base USD Rate">
+        </div>
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700">Internet/Mobile Allowance:</label>
+          <input id="internetAllowance" value="5000" type="number" class="mt-1 block w-full border border-gray-300 rounded-md p-2" placeholder="Enter Base USD Rate">
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700">Avg Comapny cost to Basic Salary ratio:</label>
+        <input id="costToBasicRatio" value="0.6" type="number" class="mt-1 block w-full border border-gray-300 rounded-md p-2" placeholder="Enter Base USD Rate">
+    </div>
+        <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700">Tax Year:</label>
+            <select  id="taxLogicYear" value="2023" onchange="calculate()"  class="mt-1 block w-full border border-gray-300 rounded-md p-2" >
+            <option value="2023" selected>23/24</option>
+            <option value="2024">24/25</option>
+          </select>
+        </div>
+        
+        <div class="flex justify-end">
+            <button id="closeModal" class="bg-gray-300 text-gray-700 px-4 py-2 rounded mr-2">Cancel</button>
+            <button id="saveModal" class="bg-blue-500 text-white px-4 py-2 rounded">Save</button>
+        </div>
+    </div>
+</div>
+
+  
  
    
-    <div class="flex justify-between space-x-4 max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg" id="SettingsDiv" style="display: none;">
-      <div class="flex justify-center mt-4">
-        
-      </div>
-      <label for="companyCost" class="block mt-4 text-gray-600">Base USD Rate:</label>
-        <input type="number" id="baseRate" value="200" placeholder="Enter Base USD Rate" class="mt-1 p-2 border border-gray-300 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500" />
-      <label for="internetAllowance" class="block mt-4 text-gray-600">Internet/Mobile Allowance:</label>
-        <input type="number" id="internetAllowance" value="5000" placeholder="Enter Internet/Mobile Allowance" class="mt-1 p-2 border border-gray-300 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500" />
-      <label for="costToBasicRatio" class="block mt-4 text-gray-600">Avg Comapny cost to Basic Salary ratio:</label>
-        <input type="number" id="costToBasicRatio" value="0.6" placeholder="Enter Avg Comapny cost to Basic Salary ratio" class="mt-1 p-2 border border-gray-300 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500" />
-    
-    </div>
-  <div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg">
+      
+  <div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg mt-4">
+    <button id="openModal" class="" onclick="ToggleSettings()"><i class="fa fa-cog m-r-5 p-2" style="color:rgba(6, 214, 160, 1)"></i>
+    </button>
     <div class="flex justify-between space-x-4">
       <!-- Forward Calculation -->
       <div id="forwardCalc" class="calc-section w-full p-4 bg-gray-50 rounded-lg shadow-md">
-        <h2 class="text-2xl font-bold text-center text-gray-800">Forward Calculation</h2>
+        <h2 class="text-2xl font-bold text-center text-gray-800">LKR Calculation</h2>
         <label for="basicSalary" class="block mt-4 text-gray-600">Basic Salary (LKR):</label>
-        <input type="text" id="basicSalary" oninput="calculate()" placeholder="Enter Basic Salary" class="mt-1 p-2 border border-gray-300 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        <input type="number" id="basicSalary" value="50000" oninput="calculate()" placeholder="Enter Basic Salary" class="mt-1 p-2 border border-gray-300 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500" />
      
         <!-- Allowances Section -->
         <div id="allowances-section" class="mt-4">
@@ -52,7 +73,7 @@
 
       <!-- Reverse Calculation -->
       <div id="reverseCalc" class="calc-section w-full p-4 bg-gray-50 rounded-lg shadow-md">
-        <h2 class="text-2xl font-bold text-center text-gray-800">Reverse Calculation</h2>
+        <h2 class="text-2xl font-bold text-center text-gray-800">USD Calculation</h2>
         <label for="usdAmount" class="block mt-4 text-gray-600">USD Amount:</label>
         <input type="number" id="usdAmount" placeholder="Enter USD Amount" oninput="convertToLKR()" class="mt-1 p-2 border border-gray-300 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500" />
         <label for="lkrRate" class="block mt-4 text-gray-600">USD to LKR Rate:</label>
@@ -63,12 +84,13 @@
         <label for="companyCost" class="block mt-4 text-gray-600">Company Cost (LKR):</label>
         <input type="number" id="companyCost" placeholder="Enter Total Company Cost (LKR)" class="mt-1 p-2 border border-gray-300 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500" />
         <div class="flex justify-center mt-4">
-          <button class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition duration-200 w-full" onclick="reverseCalculate()">Reverse Calculate</button>
+          <button class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition duration-200 w-full" onclick="reverseCalculate()">Calculate equivalent LKR Salary</button>
         </div>
       </div>
     </div>
     <!-- Results -->
-    <div id="results" class="flex justify-between space-x-4 mt-6 p-4 bg-gray-50 rounded-lg shadow-md">\
+    <div id="results" class="flex justify-between space-x-4 mt-4" style="display: none;">
+    <div id="results-content" class="mt-4" >
  </div>
         
          
