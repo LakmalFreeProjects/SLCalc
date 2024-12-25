@@ -170,23 +170,7 @@ function calculate() {
     <input type="hidden" id="calculatedCompanyCost" value="${totalCostLkr}" />
          <div class="divCompanyCost"></div>
          <canvas id="chartCompanyCost" style="width:100%;max-width:600px"></canvas>
-          <ul class="list-inline pull-left mb-1" style="list-style-type: none;">
-          <li>
-              <i class="fa fa-circle m-r-5 p-2" style="color:rgba(239, 71, 111, 1)"></i>Basic Salary
-          </li>
-          <li>
-              <i class="fa fa-circle m-r-5 p-2" style="color:rgba(255, 209, 102, 1)"></i>Allowance
-          </li>
-          <li>
-              <i class="fa fa-circle m-r-5 p-2" style="color:rgba(6, 214, 160, 1)"></i>EPF 8%
-          </li>
-          <li>
-              <i class="fa fa-circle m-r-5 p-2" style="color:rgba(17, 138, 178, 1)"></i>APIT
-          </li>
-          <li>
-              <i class="fa fa-circle m-r-5 p-2" style="color:rgba(7, 59, 76, 1)"></i>Company EPF (12%)/ ETF (3%)
-          </li>
-      </ul>
+        
          
     </div>
     
@@ -201,11 +185,11 @@ function calculate() {
   document.getElementById("results").innerHTML = resultsTable;
   const divCompanyCost = document.querySelector('.divCompanyCost');
   setGradient(divCompanyCost,"chartCompanyCost", [
-    { v:'basic',color: 'rgb(239, 71, 111)', percentage: ((basicSalary-apit-epfEmployee)*100)/totalCostLkr },
-    {v:'allowances', color: 'rgb(255, 209, 102)', percentage:(allowances*100)/totalCostLkr },
-   { v:'epf',color: 'rgb(6, 214, 160)', percentage: ((epfEmployee) *100)/totalCostLkr },
+    { v:'Basic Salary',color: 'rgb(239, 71, 111)', percentage: ((basicSalary-apit-epfEmployee)*100)/totalCostLkr },
+    {v:'Allowances', color: 'rgb(255, 209, 102)', percentage:(allowances*100)/totalCostLkr },
+   { v:'EPF Employee (8%)',color: 'rgb(6, 214, 160)', percentage: ((epfEmployee) *100)/totalCostLkr },
     {v:'APIT',color: 'rgb(17, 138, 178)', percentage: apit*100/totalCostLkr },
-   { v:'employer contributions',color: 'rgb(7, 59, 76)', percentage: ((epfEmployer+etfEmployer)*100)/totalCostLkr },
+   { v:'Company EPF (12%) / ETF (3%)',color: 'rgb(7, 59, 76)', percentage: ((epfEmployer+etfEmployer)*100)/totalCostLkr },
 
   ]);
   let x = document.getElementById("results");
@@ -436,7 +420,6 @@ function populateTextboxes() {
 populateTextboxes();
 
 function setGradient(divElement,chartElement, percentages) {
-  console.log(divElement, percentages);
 
   // Validate that percentages add up to 100
   const total = percentages.reduce((sum, current) => sum + current.percentage, 0);
@@ -528,4 +511,24 @@ document.getElementById('closeModal').onclick = function() {
 
 document.getElementById('saveModal').onclick = function() {
   document.getElementById('settingsModal').classList.add('hidden');
+};
+
+document.getElementById('internetAllowance').oninput = function() {
+  if(this.value == 0){
+  document.getElementById('btnAddInternetAllowance').classList.add('hidden');
+  }
+  else{
+    document.getElementById('btnAddInternetAllowance').classList.remove('hidden');
+  }
+
+};
+
+document.getElementById('baseRate').oninput = function() {
+  if(this.value == 0){
+  document.getElementById('btnAddPeggedAllowance').classList.add('hidden');
+  }
+  else{
+    document.getElementById('btnAddPeggedAllowance').classList.remove('hidden');
+  }
+
 };
