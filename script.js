@@ -182,6 +182,7 @@ function calculate() {
         
      
   `;
+  if(totalCostLkr > 50000){
   const uniqueLabel = `${queryOutput}-${Date.now()}`;
   if (typeof gtag === 'function') {
     gtag('event', 'share_url_calculated', {
@@ -190,6 +191,7 @@ function calculate() {
     });
   } else if (typeof ga === 'function') {
     ga('send', 'event', 'Calculation', 'share_url_calculated', uniqueLabel);
+  }
   }
   
   document.getElementById("results").innerHTML = resultsTable;
