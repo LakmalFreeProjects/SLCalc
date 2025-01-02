@@ -377,7 +377,7 @@ function addAllowance(allowance = 0, taxable = false, type = 'a') {
   // Remove button
   const removeButton = document.createElement("button");
   removeButton.className = "btn-remove";
-  removeButton.textContent = "Remove";
+  removeButton.innerHTML = "<i class='fa fa-trash'></i>";
   removeButton.onclick = () => allowanceGroup.remove();
 
   // Append elements
