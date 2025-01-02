@@ -1,8 +1,15 @@
 // Fetch USD to LKR rate from Wise API
 async function fetchLKRRate() {
+  const currency = document.getElementById("currency").value;
+  if(currency == "Other") {
+   
+    return;
+  }
+  else{
   try {
+    let url = "https://api.exchangerate-api.com/v4/latest/" + currency;
     const response = await fetch(
-      "https://api.exchangerate-api.com/v4/latest/USD"
+      url
     ); // Use a reliable API endpoint
     const data = await response.json();
     const lkrRate = data.rates.LKR;
@@ -12,7 +19,12 @@ async function fetchLKRRate() {
     console.error("Error fetching USD to LKR rate:", error);
   }
 }
+}
 
+function changeDefaultCurrency(){
+  document.getElementById("currency").value = document.getElementById("defaultCurrency").value;
+  fetchLKRRate();
+}
 function ToggleSettings(){
   var x = document.getElementById("SettingsDiv");
   if (x.style.display === "none") {
@@ -149,7 +161,7 @@ function calculate() {
 
  <input type="hidden" value="${window.location.href.split('?')[0]}${queryOutput}" id="shareURL">
     <button class="btn-copy mt-2 bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition duration-200" onclick="copyURL()">Copy Share URL</button>
-    <button class="btn-copy mt-2 bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition duration-200" onclick="fillUSD()">Fill USD section</button>
+    <button class="btn-copy mt-2 bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition duration-200" onclick="fillUSD()">Fill Foreign Currency section</button>
 
 
     </div>
@@ -244,9 +256,11 @@ function reverseCalculate() {
       <tr><th>APIT</th><td>${apit.toFixed(2)}</td></tr>
        <tr><th>Net Salary</th><td>${netSalary.toFixed(2)}</td></tr>
       <tr><th>Company Cost</th><td>${companyCost.toFixed(2)}</td></tr>
-       <tr><td colspan="2"><button class="btn-copy mt-2 bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition duration-200" onclick="fillResults(${companyCost.toFixed(2)})">Fill LKR Section (including allowances)</button>
+       <tr><td colspan="2"> <i title="NOTE: You need to make changes to basic salary to make this accurate!" class="fa fa-1.5x fa-info-circle m-r-5 p-2" style="color:blue"></i><button class="btn-copy mt-2 bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition duration-200" onclick="fillResults(${companyCost.toFixed(2)})">Fill LKR Section (including allowances)</button>
+       
 </td></tr>
     </table>
+   
       `;
   document.getElementById("results").innerHTML = reverseResultsTable;
   const results = {
@@ -267,22 +281,44 @@ function reverseCalculate() {
 
 function fillResults(companyCost){
   if(companyCost!==undefined){
-    var basicSalary = document.getElementById("basicSalary");
+    let calculatedBasic = 0;
+    let basicSalary = document.getElementById("basicSalary");
+    let pegged = document.getElementById('enablePeggedAllowance').value;
+    let enabledInternetAllowance = document.getElementById('enableInternetAllowance').value;
+    document.querySelectorAll('.allowance-group').forEach(e => e.remove());
+    if(pegged==1){
     var costToBasicRatio = document.getElementById("costToBasicRatio").value || 0.6125;
     //formatNumber(Math.round(companyCost*costToBasicRatio/100)*100);
-    basicSalary.value = Math.round(companyCost*costToBasicRatio/100)*100;
+    calculatedBasic = Math.round(companyCost*costToBasicRatio/100)*100;
     //basicSalary.value = Math.round(companyCost*costToBasicRatio/100)*100;
-    document.querySelectorAll('.allowance-group').forEach(e => e.remove());
-
-    addInternetAllowance();
+  
     addPeggedAllowance();
+    }
+    if(enabledInternetAllowance==1){
+    addInternetAllowance();
+    }
+    if(enabledInternetAllowance ==1 & pegged!=1){
+      let internetAllowance = document.getElementById("internetAllowance").value||0;
+      calculatedBasic = companyCost/(1.15+(internetAllowance*1.15/companyCost));
+    }
+    else if(enabledInternetAllowance !=1 & pegged!=1){
+      calculatedBasic = companyCost/1.15;
+    }
+    basicSalary.value = parseFloat(calculatedBasic).toFixed(2);
+
  }
+}
+
+function clearAll(){
+  document.querySelectorAll('.allowance-group').forEach(e => e.remove());
+  var basicSalary = document.getElementById("basicSalary");
+  basicSalary.value = 0;
 }
 
 function fillUSD(){
   var lkrRate = document.getElementById("lkrRate").value||200;
   var calculatedCompanyCost = document.getElementById("calculatedCompanyCost").value;
-  document.getElementById("usdAmount").value = calculatedCompanyCost / lkrRate;
+  document.getElementById("usdAmount").value = parseFloat(calculatedCompanyCost / lkrRate).toFixed(2);
   document.getElementById("companyCost").value = calculatedCompanyCost;
  }
 
@@ -544,3 +580,70 @@ document.getElementById('baseRate').oninput = function() {
   }
 
 };
+
+document.getElementById('enablePeggedAllowance').onchange = function() {
+  if(this.value == 0){
+  document.getElementById('btnAddPeggedAllowance').classList.add('hidden');
+  }
+  else{
+    document.getElementById('btnAddPeggedAllowance').classList.remove('hidden');
+  }
+
+};
+
+document.getElementById('enableInternetAllowance').onchange = function() {
+  if(this.value == 0){
+  document.getElementById('btnAddInternetAllowance').classList.add('hidden');
+  }
+  else{
+    document.getElementById('btnAddInternetAllowance').classList.remove('hidden');
+  }
+
+};
+
+function saveSettings() {
+  const settings = {
+    baseRate: document.getElementById('baseRate').value,
+    internetAllowance: document.getElementById('internetAllowance').value,
+    costToBasicRatio: document.getElementById('costToBasicRatio').value,
+    taxLogicYear: document.getElementById('taxLogicYear').value,
+    enablePeggedAllowance: document.getElementById('enablePeggedAllowance').value,
+    enableInternetAllowance: document.getElementById('enableInternetAllowance').value,
+    defaultCurrency: document.getElementById('defaultCurrency').value
+  };
+  
+  localStorage.setItem('slcalc_settings', JSON.stringify(settings));
+}
+
+function loadSettings() {
+  const savedSettings = localStorage.getItem('slcalc_settings');
+  if (savedSettings) {
+    const settings = JSON.parse(savedSettings);
+    
+    document.getElementById('baseRate').value = settings.baseRate || '200';
+    document.getElementById('internetAllowance').value = settings.internetAllowance || '5000';
+    document.getElementById('costToBasicRatio').value = settings.costToBasicRatio || '0.6';
+    document.getElementById('taxLogicYear').value = settings.taxLogicYear || '2023';
+    document.getElementById('enablePeggedAllowance').value = settings.enablePeggedAllowance || '1';
+    document.getElementById('enableInternetAllowance').value = settings.enableInternetAllowance || '1';
+    document.getElementById('defaultCurrency').value = settings.defaultCurrency || 'USD';
+    document.getElementById('currency').value = settings.defaultCurrency || 'USD';
+    // Update UI based on loaded settings
+    if (settings.enablePeggedAllowance === '0') {
+      document.getElementById('btnAddPeggedAllowance').classList.add('hidden');
+    }
+    if (settings.enableInternetAllowance === '0') {
+      document.getElementById('btnAddInternetAllowance').classList.add('hidden');
+    }
+  }
+}
+
+// Update the saveModal click handler
+document.getElementById('saveModal').onclick = function() {
+  document.getElementById('settingsModal').classList.add('hidden');
+  saveSettings();
+  //calculate(); // Recalculate with new settings
+};
+
+// Call loadSettings when the page loads
+document.addEventListener('DOMContentLoaded', loadSettings);

@@ -45,6 +45,32 @@
             <option value="2024">24/25</option>
           </select>
         </div>
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700">Enable Pegged Allowance:</label>
+          <select  id="enablePeggedAllowance" value="1" onchange="calculate()"  class="mt-1 block w-full border border-gray-300 rounded-md p-2" >
+            <option value="1" selected>yes</option>
+            <option value="0">no</option>
+        </select>
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700">Enable Internet Allowance:</label>
+        <select  id="enableInternetAllowance" value="1" onchange="calculate()"  class="mt-1 block w-full border border-gray-300 rounded-md p-2" >
+        <option value="1" selected>yes</option>
+        <option value="0">no</option>
+      </select>
+    </div>
+    <div class="mb-4">
+      <label class="block text-sm font-medium text-gray-700">Default Foreign Currency:</label>
+    <select id = "defaultCurrency" class="mt-1 p-2 border border-gray-300 rounded " onchange="changeDefaultCurrency()">
+      <option selected>USD</option>
+      <option>GBP</option>
+      <option>AUD</option>
+      <option>SGD</option>
+      <option>EUR</option>
+      <option>JPY</option>
+      <option>Other</option>
+    </select>
+    </div>
         
         <div class="flex justify-end">
             <button id="closeModal" class="bg-gray-300 text-gray-700 px-4 py-2 rounded mr-2">Cancel</button>
@@ -74,22 +100,32 @@
         <button class="btn-add mt-2 bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition duration-200" onclick="addAllowance()">Add Allowance</button>
         <button id="btnAddPeggedAllowance" class="btn-add mt-2 bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition duration-200" onclick="addPeggedAllowance()">Add Pegged Allowance</button>
         <button id="btnAddInternetAllowance" class="btn-add mt-2 bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition duration-200" onclick="addInternetAllowance()">Add Internet Allowance</button>
-        <div class="flex justify-center mt-4">
-          <button class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition duration-200 w-full" onclick="calculate()">Calculate</button>
+        <div class="flex justify-center mt-4 space-x-2">
+          <button class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition duration-200 w-1/2" onclick="calculate()">Calculate</button>
+          <button class="bg-gray-600 text-white py-2 px-4 rounded hover:bg-gray-700 transition duration-200 w-1/2" onclick="clearAll()">Reset</button>
         </div>
         </div>
      
 
       <!-- Reverse Calculation -->
       <div id="reverseCalc" class="calc-section w-full p-4 bg-gray-50 rounded-lg shadow-md">
-        <h2 class="text-2xl font-bold text-center text-gray-800">USD Calculation</h2>
-        <label for="usdAmount" class="block mt-4 text-gray-600">USD Amount:</label>
-        <input type="number" id="usdAmount" placeholder="Enter USD Amount" oninput="convertToLKR()" class="mt-1 p-2 border border-gray-300 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500" />
-        <label for="lkrRate" class="block mt-4 text-gray-600">USD to LKR Rate:</label>
+        <h2 class="text-2xl font-bold text-center text-gray-800">Foreign Currency Calculation</h2>
+        <label for="usdAmount" class="block mt-4 text-gray-600">Amount:</label>
+       
+        <select id = "currency" class="mt-1 p-2 border border-gray-300 rounded " onchange="fetchLKRRate()">
+          <option>USD</option>
+          <option>GBP</option>
+          <option>AUD</option>
+          <option>SGD</option>
+          <option>EUR</option>
+          <option>JPY</option>
+          <option>Other</option>
+        </select>
+        <input type="number" id="usdAmount" placeholder="Enter Amount" oninput="convertToLKR()" class="mt-1 p-2 w-2/3 border border-gray-300 rounded  focus:outline-none focus:ring-2 focus:ring-blue-500" />
+    
+        <label for="lkrRate" class="block mt-4 text-gray-600">LKR Conversion Rate:</label>
         <input type="text" id="lkrRate" value="290.145" oninput="convertToLKR()" class="mt-1 p-2 border border-gray-300 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500" />
-        <div class="flex justify-center mt-2">
-          <button class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition duration-200 w-full" onclick="fetchLKRRate()">Get Latest Rate</button>
-        </div>
+       
         <label for="companyCost" class="block mt-4 text-gray-600">Company Cost (LKR):</label>
         <input type="number" id="companyCost" placeholder="Enter Total Company Cost (LKR)" class="mt-1 p-2 border border-gray-300 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500" />
         <div class="flex justify-center mt-4">
