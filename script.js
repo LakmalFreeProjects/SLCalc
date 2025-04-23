@@ -636,6 +636,7 @@ function loadSettings() {
       document.getElementById('btnAddInternetAllowance').classList.add('hidden');
     }
   }
+  fetchLKRRate();
 }
 
 // Update the saveModal click handler
