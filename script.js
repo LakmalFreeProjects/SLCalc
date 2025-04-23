@@ -38,7 +38,7 @@ function calculateAPIT(taxableIncome) {
   let year = document.getElementById("taxLogicYear").value;
   let apit = 0;
 
-  if(year == '2024'){
+  if(year == '2025'){
     if (taxableIncome > 358333) {
       apit = taxableIncome * 0.36 - 94000;
     } else if (taxableIncome > 316666) {
